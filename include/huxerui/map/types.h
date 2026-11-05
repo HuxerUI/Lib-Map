@@ -39,7 +39,7 @@ struct Polyline {
   bool operator==(const Polyline&) const = default;
 };
 
-/// Report actual host-app consent before mounting a map. No SDK is initialized by InstallMaps.
+/// Report actual host-app consent before mounting a map. No SDK is initialized by map::Install.
 struct PrivacyConsent {
   bool policy_shown = false;
   bool policy_contains_provider = false;
@@ -50,15 +50,22 @@ struct PrivacyConsent {
   bool operator==(const PrivacyConsent&) const = default;
 };
 
+/// Complete declarative intent for one map, separate from observed native camera events.
+/// Values are copied into the mounted PlatformView. Change only the values whose native state should change.
 struct MapOptions {
+  /// Requested camera. Equal requests preserve user panning across unrelated recompositions.
   CameraPosition camera;
+  /// Complete marker set. IDs are stable business identities, unique within this list.
   std::vector<Marker> markers;
+  /// Complete line set, with IDs unique within this list. A line and marker may share an ID.
   std::vector<Polyline> polylines;
   MapType type = MapType::Standard;
   bool traffic_enabled = false;
   bool gestures_enabled = true;
+  /// Native zoom buttons on Android. iOS SDK adapters do not expose this control.
   bool zoom_controls = true;
   bool scale_control = true;
+  /// Actual consent already obtained by the host; setting these flags does not display or request consent.
   PrivacyConsent privacy;
   bool operator==(const MapOptions&) const = default;
 };

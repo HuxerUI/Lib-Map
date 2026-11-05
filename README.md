@@ -41,16 +41,16 @@ View Content() {
   // 仅在宿主已展示包含厂商条款的政策、并取得实际用户同意后传入。
   options.privacy = {true, true, true};
   return AMapView(options)
-      .On<MapEvents::MarkerClicked>([](std::string id) { /* ... */ })
-      .On<MapEvents::Clicked>([](CoordinateEvent event) { /* event.coordinate */ })
-      .On<MapEvents::CameraIdle>([](CameraEvent event) { /* event.camera */ })
-      .On<MapEvents::Error>([](MapError error) { /* error.code, error.message */ })
+      .On<MapEvents::MarkerClicked>([](const std::string& id) { /* ... */ })
+      .On<MapEvents::Clicked>([](const CoordinateEvent& event) { /* event.coordinate */ })
+      .On<MapEvents::CameraIdle>([](const CameraEvent& event) { /* event.camera */ })
+      .On<MapEvents::Failed>([](const MapError& error) { /* error.code, error.message */ })
       .With(Frame{.height = 400.0F});
 }
 
 const Application application{
   Content,
-  {.application_hooks = {InstallMaps}},
+  {.application_hooks = {huxerui::map::Install}},
 };
 ```
 
@@ -60,7 +60,9 @@ const Application application{
 
 `MapOptions` 在组件构造时验证：坐标必须有限且合法，缩放范围 `[3,20]`，覆盖物 ID 在同类内非空且唯一，折线至少两个点、宽度 `(0,128]`。厂商对实际缩放范围仍可能进一步限制。
 
-`InstallMaps` 只注册工厂，不初始化任何地图 SDK。首次挂载前必须取得所选厂商的隐私授权；撤销授权时卸载地图。Android 会转发 attach/detach 与 Activity resume/pause/destroy；iOS 百度会转发前后台生命周期，卸载时清除 delegate、覆盖物和通知监听。进程级 SDK 管理器仍遵循厂商生命周期，撤销授权不保证终止厂商已启动的全部后台工作。
+`map::Install` 只注册工厂，不初始化任何地图 SDK。首次挂载前必须取得所选厂商的隐私授权；撤销授权时卸载地图。Android 会转发 attach/detach 与 Activity resume/pause/destroy；iOS 百度会转发前后台生命周期，卸载时清除 delegate、覆盖物和通知监听。进程级 SDK 管理器仍遵循厂商生命周期，撤销授权不保证终止厂商已启动的全部后台工作。
+
+事件处理器在所属 UI 线程执行，事件中的引用仅在回调期间有效；要保存或异步转发时请复制值。`InstallMaps` 与 `MapEvents::Error` 分别保留为安装入口与失败事件的兼容名称。接口取舍与 Scave 本人实现的其他 Lib 对照见 [接口约定](docs/interface-conventions.md)。
 
 ## Android
 

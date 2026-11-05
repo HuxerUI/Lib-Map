@@ -47,20 +47,20 @@ View AppContent() {
     }
     content = MapView(current, std::move(options))
         .On<MapEvents::Loaded>([status] { status = "原生地图已加载。"; })
-        .On<MapEvents::Clicked>([status](CoordinateEvent event) {
+        .On<MapEvents::Clicked>([status](const CoordinateEvent& event) {
           status = "点击：" + std::to_string(event.coordinate.latitude) + ", " + std::to_string(event.coordinate.longitude);
         })
-        .On<MapEvents::LongPressed>([status](CoordinateEvent event) {
+        .On<MapEvents::LongPressed>([status](const CoordinateEvent& event) {
           status = "长按：" + std::to_string(event.coordinate.latitude) + ", " + std::to_string(event.coordinate.longitude);
         })
-        .On<MapEvents::CameraIdle>([camera](CameraEvent event) {
+        .On<MapEvents::CameraIdle>([camera](const CameraEvent& event) {
           // Preserve the latest native camera when toolbar actions change zoom.
           auto next = event.camera;
           next.zoom = std::clamp(next.zoom, 3.0, 20.0);
           if (camera.Get() != next) camera = next;
         })
-        .On<MapEvents::MarkerClicked>([status](std::string id) { status = "标记：" + id; })
-        .On<MapEvents::Error>([status](MapError error) { status = error.code + ": " + error.message; })
+        .On<MapEvents::MarkerClicked>([status](const std::string& id) { status = "标记：" + id; })
+        .On<MapEvents::Failed>([status](const MapError& error) { status = error.code + ": " + error.message; })
         .Key(current == Provider::AMap ? "amap-native" : "baidu-native");
   } else if (!visible.Get()) {
     content = Text("地图已卸载，SDK 控件和事件监听已释放。");
@@ -101,5 +101,5 @@ View App() { return MaterialTheme{AppContent()}; }
 const huxerui::Application application{
     map_preview::App,
     {.window = {.title = "HuxerUI Native Maps", .initial_size = {1080.0F, 800.0F}},
-     .show_debug_overlay = false, .application_hooks = {huxerui::map::InstallMaps}},
+     .show_debug_overlay = false, .application_hooks = {huxerui::map::Install}},
 };

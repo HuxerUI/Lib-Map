@@ -47,7 +47,8 @@ MapError MapError::Decode(const PlatformPayload& payload) {
   return {std::string(value.at("code").AsString()), std::string(value.at("message").AsString())};
 }
 
-void InstallMaps(ApplicationContext& context) { detail::InstallPlatformMaps(context); }
+void Install(ApplicationContext& context) { detail::InstallPlatformMaps(context); }
+void InstallMaps(ApplicationContext& context) { Install(context); }
 View MapView(Provider provider, MapOptions options) {
   if (provider != Provider::AMap && provider != Provider::Baidu) throw std::invalid_argument("Unknown map provider");
   Validate(options);
