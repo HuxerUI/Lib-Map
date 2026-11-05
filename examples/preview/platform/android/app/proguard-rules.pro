@@ -1,0 +1,1 @@
+-keep class org.huxerui.lib.map.preview.PhotoThumbnailModule { *; }

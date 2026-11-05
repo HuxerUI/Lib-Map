@@ -1,0 +1,10 @@
+DEVELOPMENT_TEAM = YOUR_TEAM_ID
+HUXERUI_HOME = /absolute/path/to/HuxerUI
+// Semicolon-separated directories containing matching device/simulator .framework slices.
+HUXERUI_MAP_IOS_FRAMEWORK_DIRS = /absolute/path/to/map-sdk-frameworks
+// Optional: semicolon-separated paths to vendor static dependencies (Baidu thirdlibs).
+HUXERUI_MAP_IOS_EXTRA_LIBRARIES =
+AMAP_IOS_API_KEY = YOUR_AMAP_IOS_KEY
+BAIDU_IOS_API_KEY = YOUR_BAIDU_IOS_KEY
+// Directories containing AMap.bundle and mapapi.bundle, separated by semicolons.
+HUXERUI_MAP_IOS_RESOURCE_DIRS = /absolute/path/to/map-sdk-resources

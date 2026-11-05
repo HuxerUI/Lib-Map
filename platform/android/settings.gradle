@@ -1,0 +1,18 @@
+pluginManagement {
+    repositories { google(); mavenCentral(); gradlePluginPortal() }
+    plugins { id "com.android.library" version "8.13.2" }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories { google(); mavenCentral() }
+}
+rootProject.name = "Lib-Map"
+def sdkHome = providers.environmentVariable("HUXERUI_HOME").orNull
+if (sdkHome != null && new File(sdkHome, "platform/android/huxerui").isDirectory()) {
+    include(":HuxerUI")
+    project(":HuxerUI").projectDir = new File(sdkHome, "platform/android/huxerui")
+    // HuxerUI's source Gradle module uses its version catalog.
+    dependencyResolutionManagement.versionCatalogs {
+        libs { from(files(new File(sdkHome, "platform/android/gradle/libs.versions.toml"))) }
+    }
+}

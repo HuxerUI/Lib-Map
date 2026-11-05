@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.20)
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    project(example_map VERSION 0.1.0 LANGUAGES NONE)
+    include("${CMAKE_CURRENT_SOURCE_DIR}/HuxerUIProject.cmake")
+    if(HUXERUI_PROJECT_PLAN_ONLY)
+        return()
+    endif()
+    set(HUXERUI_MAP_BUILD_EXAMPLES OFF)
+endif()
+
+set(_preview_sources src/app.cpp)
+if(NOT ANDROID AND NOT IOS AND NOT EMSCRIPTEN)
+    list(APPEND _preview_sources platform/desktop/main.cpp)
+endif()
+set(_preview_resource_arguments)
+if(ANDROID AND HUXERUI_ANDROID_RESOURCE_OUTPUT_ROOT)
+    list(APPEND _preview_resource_arguments RESOURCE_OUTPUT_DIRECTORY
+        "${HUXERUI_ANDROID_RESOURCE_OUTPUT_ROOT}/${ANDROID_ABI}")
+endif()
+huxerui_add_app(example_map SOURCES ${_preview_sources}
+    RESOURCES resources RESOURCE_NAMESPACE app
+    ${_preview_resource_arguments}
+    BUNDLE_NAME "Map Preview" BUNDLE_IDENTIFIER "org.huxerui.lib.map.preview")
+if(TARGET HuxerUI::Map)
+    huxerui_use_library(example_map TARGET HuxerUI::Map)
+else()
+    huxerui_use_library(example_map TARGET HuxerUI::Map PATH "${CMAKE_CURRENT_SOURCE_DIR}/../..")
+endif()
+if(HUXERUI_LIBRARY_GRAPH_ONLY)
+    return()
+endif()
+target_compile_options(example_map PRIVATE "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")

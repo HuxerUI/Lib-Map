@@ -1,0 +1,5 @@
+-keep public class org.huxerui.lib.map.AMapFactory { public <init>(); *; }
+-keep public class org.huxerui.lib.map.BaiduMapFactory { public <init>(); *; }
+-keep class com.amap.** { *; }
+-keep class com.autonavi.** { *; }
+-keep class com.baidu.** { *; }

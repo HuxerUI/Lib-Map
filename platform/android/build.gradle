@@ -1,0 +1,40 @@
+plugins { id "com.android.library" }
+
+android {
+    namespace = "org.huxerui.lib.map"
+    compileSdk = 36
+    defaultConfig {
+        minSdk = 23
+        consumerProguardFiles "consumer-rules.pro"
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    // AMap publishes its native libraries inside a jar rather than an AAR.
+    sourceSets.main.jniLibs.srcDir(layout.buildDirectory.dir("generated/amap-jni"))
+}
+
+configurations { amapNative }
+def amapVersion = providers.gradleProperty("huxeruiMapAMapVersion").getOrElse("10.0.600")
+def baiduVersion = providers.gradleProperty("huxeruiMapBaiduVersion").getOrElse("8.2.0")
+dependencies {
+    if (rootProject.findProject(":HuxerUI") != null) {
+        compileOnly project(":HuxerUI")
+    } else {
+        def sdkHome = providers.environmentVariable("HUXERUI_HOME").get()
+        compileOnly files("${sdkHome}/share/huxerui/platform/android/HuxerUI.aar")
+    }
+    implementation "com.amap.api:3dmap:${amapVersion}"
+    amapNative "com.amap.api:3dmap:${amapVersion}"
+    implementation "com.baidu.lbsyun:BaiduMapSDK_Map:${baiduVersion}"
+}
+def extractAMapNative = tasks.register("extractAMapNative", Sync) {
+    from({ configurations.amapNative.collect { zipTree(it) } }) {
+        include "lib/**/*.so"
+        eachFile { details -> details.path = details.path.substring(4) }
+        includeEmptyDirs = false
+    }
+    into layout.buildDirectory.dir("generated/amap-jni")
+}
+tasks.named("preBuild").configure { dependsOn extractAMapNative }
