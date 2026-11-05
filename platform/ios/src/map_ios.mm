@@ -10,7 +10,7 @@ public:
     label_ = [UILabel new];
     label_.numberOfLines = 0;
     label_.text = String("HuxerUI Map: " + message);
-    sink_->Emit("error", PlatformPayload::Object{{"code", "initialization-failed"}, {"message", message}});
+    sink_->Emit("failed", PlatformPayload::Object{{"code", "initialization-failed"}, {"message", message}});
   }
   UIView* View() override { return label_; }
   void Update(const MapOptions&) override {}

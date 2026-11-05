@@ -62,7 +62,7 @@ const Application application{
 
 `map::Install` 只注册工厂，不初始化任何地图 SDK。首次挂载前必须取得所选厂商的隐私授权；撤销授权时卸载地图。Android 会转发 attach/detach 与 Activity resume/pause/destroy；iOS 百度会转发前后台生命周期，卸载时清除 delegate、覆盖物和通知监听。进程级 SDK 管理器仍遵循厂商生命周期，撤销授权不保证终止厂商已启动的全部后台工作。
 
-事件处理器在所属 UI 线程执行，事件中的引用仅在回调期间有效；要保存或异步转发时请复制值。`InstallMaps` 与 `MapEvents::Error` 分别保留为安装入口与失败事件的兼容名称。接口取舍与 Scave 本人实现的其他 Lib 对照见 [接口约定](docs/interface-conventions.md)。
+事件处理器在所属 UI 线程执行，事件中的引用仅在回调期间有效；要保存或异步转发时请复制值。接口取舍与 Scave 本人实现的其他 Lib 对照见 [接口约定](docs/interface-conventions.md)。
 
 ## Android
 

@@ -53,7 +53,7 @@ using namespace huxerui::map::detail;
 }
 - (void)mapViewDidFailLoadingMap:(MAMapView*)map withError:(NSError*)error {
   (void)map;
-  sink->Emit("error", huxerui::PlatformPayload::Object{
+  sink->Emit("failed", huxerui::PlatformPayload::Object{
       {"code", "sdk-load-failed"}, {"message", error.localizedDescription.UTF8String ?: "AMap load failed"}});
 }
 @end

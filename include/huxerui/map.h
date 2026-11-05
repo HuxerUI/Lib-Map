@@ -50,17 +50,13 @@ struct MapEvents {
   struct MarkerClicked : Event<void(const std::string&)> { static constexpr std::string_view Name = "markerClicked"; };
   /// Reports initialization or update failure. The native adapter stops accepting updates; remount to retry.
   /// Invalid C++ arguments throw instead of emitting Failed. Some vendor service errors remain in SDK logs.
-  struct Failed : Event<void(const MapError&)> { static constexpr std::string_view Name = "error"; };
-  /// Compatibility spelling for the original event key; both names identify the same event.
-  using Error = Failed;
+  struct Failed : Event<void(const MapError&)> { static constexpr std::string_view Name = "failed"; };
 };
 
 /// Registers the native factories once through AppOptions::application_hooks, before mounting maps.
 /// No provider SDK is initialized until its view is mounted with actual host-app consent.
 /// @param context Borrowed application installation context; it is not retained.
 void Install(ApplicationContext& context);
-/// Compatibility spelling for Install. Register one spelling, not both.
-void InstallMaps(ApplicationContext& context);
 /// Reports whether this build includes a native backend for the provider.
 /// Does not inspect API keys, service authorization, connectivity, or device graphics capabilities.
 [[nodiscard]] bool IsSupported(Provider provider) noexcept;

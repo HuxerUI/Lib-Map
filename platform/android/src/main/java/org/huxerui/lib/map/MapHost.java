@@ -109,7 +109,7 @@ abstract class MapHost implements HuxerUIPlatformView, Application.ActivityLifec
         String text = error.getMessage() == null ? error.getClass().getSimpleName() : error.getMessage();
         message.setText("HuxerUI Map: " + text);
         root.addView(message);
-        root.post(() -> { if (!disposed) events.emit("error", object(
+        root.post(() -> { if (!disposed) events.emit("failed", object(
                 "code", PlatformPayload.string(code), "message", PlatformPayload.string(text))); });
     }
     private void resume() {

@@ -35,8 +35,8 @@
 ## Lib-Map 的应用
 
 - 保留 `MapView(provider, MapOptions)` 与两个厂商快捷入口；现有操作可由状态表达，暂不增加没有命令需求的 MapController / UseMap。
-- 推荐安装入口为 `huxerui::map::Install`；保留 `InstallMaps` 转发函数兼容已有调用。两者不可重复注册。
-- 推荐失败事件为 `MapEvents::Failed`；保留 `Error` 作为同一事件类型的兼容别名。原生通道字符串保持不变。
+- 安装入口为 `huxerui::map::Install`。
+- 失败事件为 `MapEvents::Failed`，跨平台原生通道事件名统一为 `failed`。
 - 结构化事件和标记 ID 使用 `const T&`，文档明确事件回调引用只在同步调用期间有效。
 - 明确 `MapOptions::camera` 是输入请求，`CameraEvent` 是实际视角快照；稳定 overlay ID 与数组下标、显示标题、厂商对象身份无关。
 - 明确原生能力查询不代表鉴权成功，Loaded 不代表在线地图已成功显示，失败需重新挂载重试，平台级管理器不随每个 View 一起销毁。
