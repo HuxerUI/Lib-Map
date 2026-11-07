@@ -18,7 +18,7 @@
 
 1. **先确定组件模型，再确定形式。** WebView 接收 Properties 并可绑定 Controller，Camera 使用 UseCamera 管理共享会话，Lottie 直接接收声明式播放控制，Charts 使用 View 派生类提供专用链式配置。不能把其中一种形式套到全部 Lib。
 
-2. **声明输入与观察结果分开。** CameraOptions 不等于 CameraStatus；WebViewProperties 不等于 WebViewNavigationState。原生事件先报告观察结果，宿主决定是否写回 State。输入值相等时，应保留原生组件当前状态，避免重组导致重新加载或重置交互。
+2. **声明输入与观察结果分开。** CameraOptions 不等于 CameraStatus；WebViewProperties 不等于 WebViewNavigationState。平台事件先报告观察结果，宿主决定是否写回 State。输入值相等时，应保留平台组件当前状态，避免重组导致重新加载或重置交互。
 
 3. **复用 HuxerUI 的公共 UI 接口。** 组件交给调用方使用 `.On<Events::...>()`、`.With(...)`、`.Key(...)`。领域专用 builder 只有在配置复杂度需要时才引入；布局和普通事件不另造一套 API。
 
@@ -36,9 +36,9 @@
 
 - 保留 `MapView(provider, MapOptions)` 与两个厂商快捷入口；现有操作可由状态表达，暂不增加没有命令需求的 MapController / UseMap。
 - 安装入口为 `huxerui::map::Install`。
-- 失败事件为 `MapEvents::Failed`，跨平台原生通道事件名统一为 `failed`。
+- 失败事件为 `MapEvents::Failed`，跨平台桥接通道事件名统一为 `failed`。
 - 结构化事件和标记 ID 使用 `const T&`，文档明确事件回调引用只在同步调用期间有效。
 - 明确 `MapOptions::camera` 是输入请求，`CameraEvent` 是实际视角快照；稳定 overlay ID 与数组下标、显示标题、厂商对象身份无关。
-- 明确原生能力查询不代表鉴权成功，Loaded 不代表在线地图已成功显示，失败需重新挂载重试，平台级管理器不随每个 View 一起销毁。
+- 明确平台能力查询不代表鉴权成功，Loaded 不代表在线地图已成功显示，失败需重新挂载重试，平台级管理器不随每个 View 一起销毁。
 
-以上调整统一调用习惯和行为契约，不改变地图提供商、坐标系、原生挂载方式或布局策略。
+以上调整统一调用习惯和行为契约，不改变地图提供商、坐标系、平台挂载方式或布局策略。

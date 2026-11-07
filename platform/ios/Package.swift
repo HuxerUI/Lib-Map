@@ -1,7 +1,7 @@
 // swift-tools-version: 5.9
 import PackageDescription
 
-// HuxerUI's library graph requires an iOS package product for every native library.
+// HuxerUI's library graph requires an iOS package product for every library with iOS support.
 // The actual C++/Objective-C++ SDK adapters are built and linked by CMake.
 let package = Package(
     name: "Map",

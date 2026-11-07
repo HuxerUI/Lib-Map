@@ -9,7 +9,7 @@ namespace huxerui::map {
 enum class Provider { AMap, Baidu };
 enum class MapType { Standard, Satellite };
 
-/// Coordinates are provider-native: GCJ-02 for AMap, BD-09 for Baidu.
+/// Coordinates use the provider's coordinate system: GCJ-02 for AMap, BD-09 for Baidu.
 /// Switching providers does not convert coordinates.
 struct Coordinate {
   double latitude = 39.909;
@@ -50,8 +50,8 @@ struct PrivacyConsent {
   bool operator==(const PrivacyConsent&) const = default;
 };
 
-/// Complete declarative intent for one map, separate from observed native camera events.
-/// Values are copied into the mounted PlatformView. Change only the values whose native state should change.
+/// Complete declarative intent for one map, separate from observed platform camera events.
+/// Values are copied into the mounted PlatformView. Change only the values whose platform state should change.
 struct MapOptions {
   /// Requested camera. Equal requests preserve user panning across unrelated recompositions.
   CameraPosition camera;
@@ -62,7 +62,7 @@ struct MapOptions {
   MapType type = MapType::Standard;
   bool traffic_enabled = false;
   bool gestures_enabled = true;
-  /// Native zoom buttons on Android. iOS SDK adapters do not expose this control.
+  /// SDK zoom buttons on Android. iOS SDK adapters do not expose this control.
   bool zoom_controls = true;
   bool scale_control = true;
   /// Actual consent already obtained by the host; setting these flags does not display or request consent.

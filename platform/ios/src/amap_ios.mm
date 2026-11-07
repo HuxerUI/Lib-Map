@@ -19,15 +19,15 @@ using namespace huxerui::map::detail;
 }
 @end
 @implementation HUIAMapDelegate
-- (void)mapViewDidFinishLoadingMap:(MAMapView*)map { (void)map; sink->Emit("loaded"); }
+- (void)mapViewDidFinishLoadingMap:(MAMapView*)map { HUXERUI_MAP_UNUSED(map); sink->Emit("loaded"); }
 - (void)mapView:(MAMapView*)map didSingleTappedAtCoordinate:(CLLocationCoordinate2D)coordinate {
-  (void)map; sink->CoordinateEvent("clicked", coordinate);
+  HUXERUI_MAP_UNUSED(map); sink->CoordinateEvent("clicked", coordinate);
 }
 - (void)mapView:(MAMapView*)map didLongPressedAtCoordinate:(CLLocationCoordinate2D)coordinate {
-  (void)map; sink->CoordinateEvent("longPressed", coordinate);
+  HUXERUI_MAP_UNUSED(map); sink->CoordinateEvent("longPressed", coordinate);
 }
 - (void)mapView:(MAMapView*)map regionDidChangeAnimated:(BOOL)animated {
-  (void)animated; sink->CameraIdle(map.centerCoordinate, map.zoomLevel);
+  HUXERUI_MAP_UNUSED(animated); sink->CameraIdle(map.centerCoordinate, map.zoomLevel);
 }
 - (MAAnnotationView*)mapView:(MAMapView*)map viewForAnnotation:(id<MAAnnotation>)annotation {
   if (![annotation isKindOfClass:HUIAMapMarker.class]) return nil;
@@ -38,12 +38,12 @@ using namespace huxerui::map::detail;
   return view;
 }
 - (void)mapView:(MAMapView*)map didSelectAnnotationView:(MAAnnotationView*)view {
-  (void)map;
+  HUXERUI_MAP_UNUSED(map);
   if ([view.annotation isKindOfClass:HUIAMapMarker.class])
     sink->Emit("markerClicked", ((HUIAMapMarker*)view.annotation).markerId.UTF8String ?: "");
 }
 - (MAOverlayRenderer*)mapView:(MAMapView*)map rendererForOverlay:(id<MAOverlay>)overlay {
-  (void)map;
+  HUXERUI_MAP_UNUSED(map);
   const auto found = lines.find((__bridge const void*)overlay);
   if (found == lines.end() || ![overlay isKindOfClass:MAPolyline.class]) return nil;
   MAPolylineRenderer* renderer = [[MAPolylineRenderer alloc] initWithPolyline:(MAPolyline*)overlay];
@@ -52,7 +52,7 @@ using namespace huxerui::map::detail;
   return renderer;
 }
 - (void)mapViewDidFailLoadingMap:(MAMapView*)map withError:(NSError*)error {
-  (void)map;
+  HUXERUI_MAP_UNUSED(map);
   sink->Emit("failed", huxerui::PlatformPayload::Object{
       {"code", "sdk-load-failed"}, {"message", error.localizedDescription.UTF8String ?: "AMap load failed"}});
 }
@@ -60,7 +60,7 @@ using namespace huxerui::map::detail;
 
 namespace huxerui::map::detail {
 namespace {
-class AMapInstance final : public NativeMap {
+class AMapInstance final : public PlatformMap {
 public:
   AMapInstance(const MapOptions& options, std::shared_ptr<EventSink> sink) : sink_(std::move(sink)) {
     NSString* key = [NSBundle.mainBundle objectForInfoDictionaryKey:@"HuxerUIAMapAPIKey"];
@@ -133,7 +133,7 @@ private:
   std::optional<MapOptions> previous_;
 };
 } // namespace
-std::shared_ptr<NativeMap> CreateAMap(const MapOptions& options, std::shared_ptr<EventSink> sink) {
+std::shared_ptr<PlatformMap> CreateAMap(const MapOptions& options, std::shared_ptr<EventSink> sink) {
   return std::make_shared<AMapInstance>(options, std::move(sink));
 }
 } // namespace huxerui::map::detail

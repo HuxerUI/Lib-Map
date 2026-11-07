@@ -31,7 +31,7 @@ jobs:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
       - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
-      - name: Compile native SDK Java adapters and package AAR
+      - name: Compile SDK Java adapters and package AAR
         working-directory: platform/android
         env:
           HUXERUI_HOME: ${{ github.workspace }}/.cache/HuxerUI

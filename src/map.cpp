@@ -51,7 +51,7 @@ void Install(ApplicationContext& context) { detail::InstallPlatformMaps(context)
 View MapView(Provider provider, MapOptions options) {
   if (provider != Provider::AMap && provider != Provider::Baidu) throw std::invalid_argument("Unknown map provider");
   Validate(options);
-  if (!IsSupported(provider)) return Text("Native AMap / Baidu Map SDKs require an enabled Android or iOS backend.");
+  if (!IsSupported(provider)) return Text("AMap / Baidu Map SDKs require an enabled Android or iOS backend.");
   if (!options.privacy.Granted()) throw std::invalid_argument("Obtain provider privacy consent before mounting MapView");
   return PlatformView(provider == Provider::AMap ? detail::amap_type : detail::baidu_type,
                       detail::MapProperties{std::move(options)});

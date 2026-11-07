@@ -95,9 +95,9 @@ public final class BaiduMapFactory implements HuxerUIPlatformView.Factory {
                 for (PlatformPayload marker : value.requireField("markers").elements()) {
                     Bundle metadata = new Bundle(); metadata.putString("huxerui.id", marker.requireField("id").requireString());
                     metadata.putString("huxerui.subtitle", marker.requireField("subtitle").requireString());
-                    Marker nativeMarker = (Marker) map.addOverlay(new MarkerOptions().position(point(marker.requireField("position")))
+                    Marker mapMarker = (Marker) map.addOverlay(new MarkerOptions().position(point(marker.requireField("position")))
                             .icon(markerIcon).title(marker.requireField("title").requireString()).extraInfo(metadata));
-                    markers.add(nativeMarker);
+                    markers.add(mapMarker);
                 }
             }
             if (changed(value, previous, "polylines")) {

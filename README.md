@@ -1,10 +1,10 @@
 # Lib-Map
 
-HuxerUI 地图组件拓展：将高德、百度地图的**原生 SDK 控件**嵌入 HuxerUI `PlatformView`，提供统一的 C++20 声明式接口。
+HuxerUI 地图组件拓展：将高德、百度地图的 **SDK 控件**嵌入 HuxerUI `PlatformView`，提供统一的 C++20 声明式接口。
 
 - Android：高德 `TextureMapView`、百度 `TextureMapView`，通过 HuxerUI Java PlatformView 桥接。
 - iOS：已实现高德 `MAMapView`、百度 `BMKMapView` 的 UIKit PlatformView 适配；尚未在 macOS / Xcode 编译或真机验证。
-- Windows / macOS / Linux / Web：这两个厂商没有本库可用的对应原生后端；`IsSupported` 返回 `false`，组件显示说明文字。
+- Windows / macOS / Linux / Web：这两个厂商没有本库可用的对应平台后端；`IsSupported` 返回 `false`，组件显示说明文字。
 
 不使用 WebView，不打包网页地图。API Key、SDK 二进制与用户授权由宿主应用配置。
 
@@ -12,13 +12,13 @@ HuxerUI 地图组件拓展：将高德、百度地图的**原生 SDK 控件**嵌
 
 统一支持中心点与缩放、普通/卫星地图、实时路况、手势、比例尺、标记、折线，以及加载、点击、长按、视角停止变化、标记点击和初始化错误事件。
 
-标记与折线通过完整列表声明；只有列表内容发生变化时才更新原生覆盖物。视角同样只在提交的 `camera` 改变时更新，切换路况等普通重组不会重置用户拖动后的视角。需要受控视角时，将 `CameraIdle` 写回状态。缩放按钮控件仅 Android 支持；iOS 可以使用 HuxerUI 按钮修改 `camera.zoom`。
+标记与折线通过完整列表声明；只有列表内容发生变化时才更新平台覆盖物。视角同样只在提交的 `camera` 改变时更新，切换路况等普通重组不会重置用户拖动后的视角。需要受控视角时，将 `CameraIdle` 写回状态。缩放按钮控件仅 Android 支持；iOS 可以使用 HuxerUI 按钮修改 `camera.zoom`。
 
 本版本覆盖地图展示与交互，不包含定位、POI 检索、路线规划、离线地图，也不会申请定位权限。厂商服务鉴权失败可能由 SDK 自身界面/日志报告，`Loaded` 只表示控件加载完成，不代表在线服务鉴权成功。
 
 ## 接入
 
-依赖具有 `PlatformView`、`RegisterPlatformView`、Java / UIKit 原生桥接能力的 HuxerUI SDK 或源码。
+依赖具有 `PlatformView`、`RegisterPlatformView`、Java / UIKit 平台桥接能力的 HuxerUI SDK 或源码。
 
 ```cmake
 huxerui_use_library(my_app
@@ -54,7 +54,7 @@ const Application application{
 };
 ```
 
-使用 `BaiduMapView(options)` 或 `MapView(Provider::Baidu, options)` 切换厂商。更换厂商时使用不同 `.Key(...)`，确保原生实例卸载并重新创建。
+使用 `BaiduMapView(options)` 或 `MapView(Provider::Baidu, options)` 切换厂商。更换厂商时使用不同 `.Key(...)`，确保平台实例卸载并重新创建。
 
 `Coordinate` 的字段顺序是 **latitude, longitude**。高德使用 **GCJ-02**；百度在初始化时固定为 **BD-09**。本库不自动转换坐标，不能把同一组坐标直接用于两家厂商。宿主不要在其他位置修改百度 SDK 的全局坐标类型。
 
@@ -66,7 +66,7 @@ const Application application{
 
 ## Android
 
-最低 API 23，示例 compileSdk/targetSdk 36，JDK **17**，NDK `29.0.14206865`。Gradle 模块位于 `platform/android`，兼容 HuxerUI 原生库依赖图。
+最低 API 23，示例 compileSdk/targetSdk 36，JDK **17**，NDK `29.0.14206865`。Gradle 模块位于 `platform/android`，兼容 HuxerUI 库依赖图。
 
 固定 Maven 依赖为高德 `com.amap.api:3dmap:10.0.600`、百度 `com.baidu.lbsyun:BaiduMapSDK_Map:8.2.0`。可通过 Gradle 属性 `huxeruiMapAMapVersion` / `huxeruiMapBaiduVersion` 覆盖。这些是可解析的固定版本，不声明为厂商最新版。高德 JAR 内的 `.so` 由构建任务提取到 `jniLibs`，百度 AAR 通过 Gradle 自动合并。
 
@@ -104,7 +104,7 @@ android {
 
 ## Demo
 
-`examples/preview` 遵循其他 HuxerUI lib 的应用布局，包含 `HuxerUIProject.cmake`、原生平台入口和统一 C++ 界面。支持厂商切换、缩放、回到天安门、卫星图、路况、手势、标记与折线、卸载/重新挂载和事件状态。切换厂商会重新请求该厂商的隐私确认。
+`examples/preview` 遵循其他 HuxerUI lib 的应用布局，包含 `HuxerUIProject.cmake`、平台入口和统一 C++ 界面。支持厂商切换、缩放、回到天安门、卫星图、路况、手势、标记与折线、卸载/重新挂载和事件状态。切换厂商会重新请求该厂商的隐私确认。
 
 详细步骤见 [demo README](examples/preview/README.md)。桌面 demo 用于检查布局与交互，不模拟地图成功加载。
 
@@ -127,7 +127,7 @@ cmake --build build --config Release
 ctest --test-dir build -C Release --output-on-failure
 ```
 
-模型测试检查坐标/缩放/覆盖物边界，载荷测试检查 C++ 到原生桥接的数据与事件契约。移动端真实地图的显示、鉴权和手势仍需使用自己的 Key 与设备验收；当前 Windows 开发环境不能执行 iOS 构建。
+模型测试检查坐标/缩放/覆盖物边界，载荷测试检查 C++ 到平台桥接的数据与事件契约。移动端真实地图的显示、鉴权和手势仍需使用自己的 Key 与设备验收；当前 Windows 开发环境不能执行 iOS 构建。
 
 ## 官方参考
 

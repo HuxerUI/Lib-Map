@@ -4,7 +4,7 @@
 namespace huxerui::map {
 namespace detail {
 namespace {
-class FailedMap final : public NativeMap {
+class FailedMap final : public PlatformMap {
 public:
   FailedMap(std::shared_ptr<EventSink> sink, std::string message) : sink_(std::move(sink)) {
     label_ = [UILabel new];
@@ -20,28 +20,30 @@ private:
   std::shared_ptr<EventSink> sink_;
 };
 
-using Creator = std::shared_ptr<NativeMap>(const MapOptions&, std::shared_ptr<EventSink>);
+using Creator = std::shared_ptr<PlatformMap>(const MapOptions&, std::shared_ptr<EventSink>);
 void Register(ApplicationContext& context, const char* type, Creator* create) {
-  ios::PlatformViewFactory<MapProperties, NativeMap> factory{
-      .create = [create](UIViewController*, const MapProperties& properties, PlatformEventEmitter events) -> std::shared_ptr<NativeMap> {
+  ios::PlatformViewFactory<MapProperties, PlatformMap> factory{
+      .create = [create](UIViewController*, const MapProperties& properties, PlatformEventEmitter events) -> std::shared_ptr<PlatformMap> {
         auto sink = std::make_shared<EventSink>(std::move(events));
         if (!properties.options.privacy.Granted()) return std::make_shared<FailedMap>(sink, "Provider privacy consent is required");
         @try {
           try { return create(properties.options, sink); }
           catch (const std::exception& error) { return std::make_shared<FailedMap>(sink, error.what()); }
         } @catch (NSException* error) {
-          return std::make_shared<FailedMap>(sink, error.reason.UTF8String ?: "Native map initialization failed");
+          return std::make_shared<FailedMap>(sink, error.reason.UTF8String ?: "Map initialization failed");
         }
       },
-      .view = [](const std::shared_ptr<NativeMap>& instance) { return instance->View(); },
-      .update = [](NativeMap& instance, const MapProperties& properties) { instance.Update(properties.options); },
-      .dispose = [](NativeMap& instance) { instance.Dispose(); },
+      .view = [](const std::shared_ptr<PlatformMap>& instance) { return instance->View(); },
+      .update = [](PlatformMap& instance, const MapProperties& properties) { instance.Update(properties.options); },
+      .dispose = [](PlatformMap& instance) { instance.Dispose(); },
   };
   context.RegisterPlatformView<MapProperties>(type, std::move(factory));
 }
 } // namespace
 void InstallPlatformMaps(ApplicationContext& context) {
-  (void)context;
+#if !HUXERUI_MAP_ENABLE_AMAP && !HUXERUI_MAP_ENABLE_BAIDU
+  HUXERUI_MAP_UNUSED(context);
+#endif
 #if HUXERUI_MAP_ENABLE_AMAP
   Register(context, amap_type, CreateAMap);
 #endif

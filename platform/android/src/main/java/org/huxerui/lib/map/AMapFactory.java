@@ -67,10 +67,10 @@ public final class AMapFactory implements HuxerUIPlatformView.Factory {
                 for (Marker marker : markers) marker.remove();
                 markers.clear();
                 for (PlatformPayload marker : value.requireField("markers").elements()) {
-                    Marker nativeMarker = map.addMarker(new MarkerOptions().position(point(marker.requireField("position")))
+                    Marker mapMarker = map.addMarker(new MarkerOptions().position(point(marker.requireField("position")))
                             .title(marker.requireField("title").requireString()).snippet(marker.requireField("subtitle").requireString()));
-                    nativeMarker.setObject(marker.requireField("id").requireString());
-                    markers.add(nativeMarker);
+                    mapMarker.setObject(marker.requireField("id").requireString());
+                    markers.add(mapMarker);
                 }
             }
             if (changed(value, previous, "polylines")) {

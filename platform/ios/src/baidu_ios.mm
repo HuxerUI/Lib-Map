@@ -19,15 +19,15 @@ using namespace huxerui::map::detail;
 }
 @end
 @implementation HUIBaiduDelegate
-- (void)mapViewDidFinishLoading:(BMKMapView*)map { (void)map; sink->Emit("loaded"); }
+- (void)mapViewDidFinishLoading:(BMKMapView*)map { HUXERUI_MAP_UNUSED(map); sink->Emit("loaded"); }
 - (void)mapView:(BMKMapView*)map onClickedMapBlank:(CLLocationCoordinate2D)coordinate {
-  (void)map; sink->CoordinateEvent("clicked", coordinate);
+  HUXERUI_MAP_UNUSED(map); sink->CoordinateEvent("clicked", coordinate);
 }
 - (void)mapview:(BMKMapView*)map onLongClick:(CLLocationCoordinate2D)coordinate {
-  (void)map; sink->CoordinateEvent("longPressed", coordinate);
+  HUXERUI_MAP_UNUSED(map); sink->CoordinateEvent("longPressed", coordinate);
 }
 - (void)mapView:(BMKMapView*)map regionDidChangeAnimated:(BOOL)animated {
-  (void)animated; sink->CameraIdle(map.centerCoordinate, map.zoomLevel);
+  HUXERUI_MAP_UNUSED(animated); sink->CameraIdle(map.centerCoordinate, map.zoomLevel);
 }
 - (BMKAnnotationView*)mapView:(BMKMapView*)map viewForAnnotation:(id<BMKAnnotation>)annotation {
   if (![annotation isKindOfClass:HUIBaiduMarker.class]) return nil;
@@ -37,12 +37,12 @@ using namespace huxerui::map::detail;
   return view;
 }
 - (void)mapView:(BMKMapView*)map didSelectAnnotationView:(BMKAnnotationView*)view {
-  (void)map;
+  HUXERUI_MAP_UNUSED(map);
   if ([view.annotation isKindOfClass:HUIBaiduMarker.class])
     sink->Emit("markerClicked", ((HUIBaiduMarker*)view.annotation).markerId.UTF8String ?: "");
 }
 - (BMKOverlayView*)mapView:(BMKMapView*)map viewForOverlay:(id<BMKOverlay>)overlay {
-  (void)map;
+  HUXERUI_MAP_UNUSED(map);
   const auto found = lines.find((__bridge const void*)overlay);
   if (found == lines.end() || ![overlay isKindOfClass:BMKPolyline.class]) return nil;
   BMKPolylineView* view = [[BMKPolylineView alloc] initWithPolyline:(BMKPolyline*)overlay];
@@ -55,7 +55,7 @@ namespace huxerui::map::detail {
 namespace {
 // BMKMapManager is process-wide; retain it while any map can be mounted.
 BMKMapManager* manager;
-class BaiduInstance final : public NativeMap {
+class BaiduInstance final : public PlatformMap {
 public:
   BaiduInstance(const MapOptions& options, std::shared_ptr<EventSink> sink) : sink_(std::move(sink)) {
     NSString* key = [NSBundle.mainBundle objectForInfoDictionaryKey:@"HuxerUIBaiduMapAPIKey"];
@@ -138,7 +138,7 @@ private:
   std::optional<MapOptions> previous_;
 };
 } // namespace
-std::shared_ptr<NativeMap> CreateBaiduMap(const MapOptions& options, std::shared_ptr<EventSink> sink) {
+std::shared_ptr<PlatformMap> CreateBaiduMap(const MapOptions& options, std::shared_ptr<EventSink> sink) {
   return std::make_shared<BaiduInstance>(options, std::move(sink));
 }
 } // namespace huxerui::map::detail

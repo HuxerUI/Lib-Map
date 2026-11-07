@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(lib_map VERSION 0.1.0 LANGUAGES NONE)
 
-option(HUXERUI_MAP_BUILD_VIEW "Build the HuxerUI native map components" ON)
+option(HUXERUI_MAP_BUILD_VIEW "Build the HuxerUI map components" ON)
 option(HUXERUI_MAP_BUILD_TESTS "Build map tests" OFF)
 option(HUXERUI_MAP_BUILD_EXAMPLES "Build the map preview app" OFF)
 option(HUXERUI_MAP_ENABLE_AMAP "Enable the iOS AMap backend (Android includes both providers)" ON)

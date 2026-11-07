@@ -9,7 +9,7 @@ int main() {
   try {
     MapOptions options;
     options.privacy = {true, true, true};
-    options.markers = {{"landmark", {39.9, 116.4}, "Beijing", "Native marker"}};
+    options.markers = {{"landmark", {39.9, 116.4}, "Beijing", "Map marker"}};
     options.polylines = {{"route", {{39.9, 116.4}, {39.91, 116.41}}, 4, 0xFF2563EB}};
     const auto encoded = huxerui::map::detail::MapProperties::Encode({options});
     const auto restored = PlatformPayload::Decode(encoded.Encode());

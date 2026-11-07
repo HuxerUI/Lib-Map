@@ -6,7 +6,7 @@ Verified against HuxerUI `cadb1696cfa7b87d9d2d316b3ecba07b85a46962`.
 | --- | --- |
 | Standalone model build and CTest, MSVC / Release | Passed |
 | Full HuxerUI component build, MSVC / Release | Passed |
-| Model and native payload/event CTest | 2/2 passed |
+| Model and platform payload/event CTest | 2/2 passed |
 | Library and preview project-plan output | Passed |
 | Preview library dependency graph | Passed |
 | Android Java adapters / debug AAR | Passed |
