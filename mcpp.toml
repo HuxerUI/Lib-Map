@@ -1,0 +1,26 @@
+[package]
+namespace   = "huxerui"
+name        = "map"
+version     = "0.1.0"
+standard    = "c++23"
+license     = "MIT"
+repo        = "https://github.com/HuxerUI/Lib-Map"
+description = "Cross-platform declarative map view, types, and overlay validation for HuxerUI"
+
+[package.metadata.huxerui]
+library   = "HuxerUI::Map"
+namespace = "huxerui::map"
+id        = "org.huxerui.lib.map"
+
+[dependencies]
+huxerui.huxerui = "0.5.5"
+
+[targets.map]
+kind = "lib"
+
+[lib]
+path = "modules/map.cppm"
+
+[build]
+sources      = []
+include_dirs = ["include"]

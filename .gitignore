@@ -1,5 +1,8 @@
 /build*/
 **/build*/
+/target/
+/.mcpp/
+mcpp.lock
 /.cache/
 /.huxerui/
 **/.huxerui/
